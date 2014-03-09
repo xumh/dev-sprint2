@@ -48,13 +48,21 @@ class Remote(flask.views.MethodView):
         result = eval(flask.request.form['expression'])
         flask.flash(result)
         return flask.redirect(flask.url_for('remote'))
-    
+ 
+class music(flask.views.MethodView):
+    @login_required
+    def get(self):
+        songs = os.listdir('static/music/')
+        return flask.render_template('music.html', songs=songs)
+   
 app.add_url_rule('/',
                  view_func=Main.as_view('index'),
                  methods=["GET", "POST"])
 app.add_url_rule('/remote/',
                  view_func=Remote.as_view('remote'),
                  methods=['GET', 'POST'])
+
+app.add_url_rule('/music/', view_func=music.as_view('music'), methods=['GET'])
 
 app.debug = True
 app.run()
